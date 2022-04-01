@@ -4,8 +4,8 @@ const puppeteer = require('puppeteer');
 async function run() {
 
     const url = 'https://phpmyadmin.umbler.com/';
-    const server = process.env.SERVER;
-    const user = process.env.USER;
+    const server = process.env.SERVER_NAME;
+    const user = process.env.USER_NAME;
     const password = process.env.PASSWORD;
 
     if (server === "") {
@@ -28,9 +28,9 @@ async function run() {
 
     await page.goto(url);
 
-    await page.type('#input_servername', process.env.SERVER);
-    await page.type('#input_username', process.env.USER);
-    await page.type('#input_password', process.env.PASSWORD);
+    await page.type('#input_servername', server);
+    await page.type('#input_username', user);
+    await page.type('#input_password', password);
     await page.click('#input_go');
     await page.waitForNavigation();
 
