@@ -23,7 +23,9 @@ async function run() {
         return;
     }
 
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+        headless: false
+    });
     const page = await browser.newPage();
 
     await page.goto(url);
@@ -34,7 +36,20 @@ async function run() {
     await page.click('#input_go');
     await page.waitForNavigation();
 
-    await browser.close();
+    await page.goto(`${url}index.php?route=/server/export`);
+
+    //Chromium is breaking the CSS element (#buttonGo) and it is preventing you from clicking on the element
+    //Below the solution
+    await page.evaluate(() => {
+        document.querySelector(".exportoptions #buttonGo").style = "float: none";
+    })
+
+    await page._client.send('Page.setDownloadBehavior', {
+        behavior: 'allow',
+        downloadPath: process.env.PATH_DOWNLOAD
+    });
+
+    await page.click('#buttonGo');
 }
 
 run();
